@@ -1,13 +1,23 @@
 #include "Examples/UserConfiguration.h"
+<<<<<<< HEAD
 #include "../lib/ProtoTracer/ExternalDevices/InputDevices/ButtonHandler.h"
+=======
+>>>>>>> f79d93c0f7acf031be184e4089ba2f027af905ac
 
 #ifdef TESTHARDWARE
 #include "Examples/Protogen/ProtogenHardwareTest.h"
 #endif
 
+<<<<<<< HEAD
 //#include "Examples/Commissions/UnicornZhenjaAnimation.h"
 #include "Examples/Protogen/ProtogenHUB75Project.h"
 //#include "Examples/VerifyEngine.h"
+=======
+//#include "Examples\Commissions\UnicornZhenjaAnimation.h"
+#include "Examples/Protogen/ProtogenHUB75Project.h"
+//#include "Examples\Protogen\ProtogenWS35Project.h"
+//#include "Examples\VerifyEngine.h"
+>>>>>>> f79d93c0f7acf031be184e4089ba2f027af905ac
 
 ProtogenHUB75Project project;
 

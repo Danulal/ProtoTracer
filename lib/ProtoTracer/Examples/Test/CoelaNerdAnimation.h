@@ -6,7 +6,11 @@
 #include "../Materials/LightMaterial.h"
 #include "../Math/FunctionGenerator.h"
 
+<<<<<<< HEAD
 //#include "Flash/Images/CoelaToot.h"
+=======
+//#include "Flash\Images\CoelaToot.h"
+>>>>>>> f79d93c0f7acf031be184e4089ba2f027af905ac
 #include "Flash/ImageSequences/Nerd.h"
 
 class CoelaNerdAnimation : public Animation{

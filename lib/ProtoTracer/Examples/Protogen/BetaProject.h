@@ -10,7 +10,11 @@
 #include "../Render/Scene.h"
 #include "../Signals/FunctionGenerator.h"
 #include "../Menu/Menu.h"
+<<<<<<< HEAD
 //#include "../Menu/NeoTrellisMenu.h"
+=======
+//#include "..\Menu\NeoTrellisMenu.h"
+>>>>>>> f79d93c0f7acf031be184e4089ba2f027af905ac
 #include "../Sensors/APDS9960.h"
 
 #include "../Materials/Animated/RainbowNoise.h"
