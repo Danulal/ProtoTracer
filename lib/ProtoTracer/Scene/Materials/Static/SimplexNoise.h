@@ -1,5 +1,9 @@
 #pragma once
 
+<<<<<<< HEAD
+=======
+#include <cstdlib>
+>>>>>>> f79d93c0f7acf031be184e4089ba2f027af905ac
 #include "../Material.h"
 #include "../../../Utils/Math/Mathematics.h"
 #include "../../../Utils/Math/Vector3D.h"

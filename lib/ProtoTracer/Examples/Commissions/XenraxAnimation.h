@@ -11,7 +11,11 @@
 #include "../../Render/Scene.h"
 #include "../../Signals/FunctionGenerator.h"
 #include "../../Menu/SingleButtonMenu.h"
+<<<<<<< HEAD
 //#include "../Menu/NeoTrellisMenu.h"
+=======
+//#include "..\Menu\NeoTrellisMenu.h"
+>>>>>>> f79d93c0f7acf031be184e4089ba2f027af905ac
 #include "../../Sensors/APDS9960.h"
 #include "../../Sensors/MMC56X3.h"
 
