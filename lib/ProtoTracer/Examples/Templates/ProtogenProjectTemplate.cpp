@@ -24,8 +24,20 @@ void ProtogenProject::SetMaterialLayers(){
     materialAnimator.AddMaterial(Material::Replace, &rainbowSpiral, 40, 0.0f, 1.0f);//layer 9
     materialAnimator.AddMaterial(Material::Replace, &roseMaterial, 40, 0.0f, 1.0f); // layer 10
     materialAnimator.AddMaterial(Material::Replace, &customMaterial, 40, 0.0f, 1.0f); // layer 11 for custom color
+    materialAnimator.AddMaterial(Material::Replace, &sA, 20, 0.0f, 1.0f);
+    materialAnimator.AddMaterial(Material::Replace, &aRG, 20, 0.0f, 1.0f);
+    materialAnimator.AddMaterial(Material::Replace, &oSC, 20, 0.0f, 1.0f);
 
     backgroundMaterial.SetBaseMaterial(Material::Add, Menu::GetMaterial());
+    backgroundMaterial.AddMaterial(Material::Replace, &yellowMaterial, 40, 0.0f, 1.0f);//layer 1
+    backgroundMaterial.AddMaterial(Material::Replace, &orangeMaterial, 40, 0.0f, 1.0f);//layer 2
+    backgroundMaterial.AddMaterial(Material::Replace, &whiteMaterial, 40, 0.0f, 1.0f);//layer 3
+    backgroundMaterial.AddMaterial(Material::Replace, &greenMaterial, 40, 0.0f, 1.0f);//layer 4
+    backgroundMaterial.AddMaterial(Material::Replace, &purpleMaterial, 40, 0.0f, 1.0f);//layer 5
+    backgroundMaterial.AddMaterial(Material::Replace, &redMaterial, 40, 0.0f, 1.0f);//layer 6
+    backgroundMaterial.AddMaterial(Material::Replace, &blueMaterial, 40, 0.0f, 1.0f);//layer 7
+    backgroundMaterial.AddMaterial(Material::Replace, &flowNoise, 40, 0.0f, 1.0f);//layer 8
+    backgroundMaterial.AddMaterial(Material::Replace, &rainbowSpiral, 40, 0.0f, 1.0f);//layer 9
     backgroundMaterial.AddMaterial(Material::Add, &sA, 20, 0.0f, 1.0f);
     backgroundMaterial.AddMaterial(Material::Add, &aRG, 20, 0.0f, 1.0f);
     backgroundMaterial.AddMaterial(Material::Add, &oSC, 20, 0.0f, 1.0f);
@@ -68,6 +80,8 @@ void ProtogenProject::SetMaterialColor(){
 }
 
 void ProtogenProject::UpdateFace(float ratio) {
+    while(!frameLimiter.IsReady()) delay(1);
+
     Menu::Update(ratio);
 
     fanController.SetPWM(Menu::GetFanSpeed() * 25);
@@ -260,7 +274,7 @@ float ProtogenProject::GetFaceScale(){
     return xSizeRatio;
 }
 
-void ProtogenProject::AddParameter(uint8_t index, float* parameter, uint8_t transitionFrames, IEasyEaseAnimator::InterpolationMethod interpolationMethod, bool invertDirection){
+void ProtogenProject::AddParameter(uint8_t index, float* parameter, uint16_t transitionFrames, IEasyEaseAnimator::InterpolationMethod interpolationMethod, bool invertDirection){
     if(invertDirection){
         eEA.AddParameter(parameter, index, transitionFrames, 1.0f, 0.0f);
     }
@@ -298,36 +312,37 @@ void ProtogenProject::SetCustomColor(RGBColor color)
 }
 
 void ProtogenProject::AddMaterialFrame(Color color){
+void ProtogenProject::AddMaterialFrame(Color color, float opacity){
     switch(color){
         case CYELLOW:
-            materialAnimator.AddMaterialFrame(yellowMaterial, 0.8f);
+            materialAnimator.AddMaterialFrame(yellowMaterial, opacity);
             break;
         case CORANGE:
-            materialAnimator.AddMaterialFrame(orangeMaterial, 0.8f);
+            materialAnimator.AddMaterialFrame(orangeMaterial, opacity);
             break;
         case CWHITE:
-            materialAnimator.AddMaterialFrame(whiteMaterial, 0.8f);
+            materialAnimator.AddMaterialFrame(whiteMaterial, opacity);
             break;
         case CGREEN:
-            materialAnimator.AddMaterialFrame(greenMaterial, 0.8f);
+            materialAnimator.AddMaterialFrame(greenMaterial, opacity);
             break;
         case CPURPLE:
-            materialAnimator.AddMaterialFrame(purpleMaterial, 0.8f);
+            materialAnimator.AddMaterialFrame(purpleMaterial, opacity);
             break;
         case CRED:
-            materialAnimator.AddMaterialFrame(redMaterial, 0.8f);
+            materialAnimator.AddMaterialFrame(redMaterial, opacity);
             break;
         case CBLUE:
-            materialAnimator.AddMaterialFrame(blueMaterial, 0.8f);
+            materialAnimator.AddMaterialFrame(blueMaterial, opacity);
             break;
         case CPINK:
             materialAnimator.AddMaterialFrame(roseMaterial, 0.8f);
             break;
         case CRAINBOW:
-            materialAnimator.AddMaterialFrame(rainbowSpiral, 0.8f);
+            materialAnimator.AddMaterialFrame(rainbowSpiral, opacity);
             break;
         case CRAINBOWNOISE:
-            materialAnimator.AddMaterialFrame(flowNoise, 0.8f);
+            materialAnimator.AddMaterialFrame(flowNoise, opacity);
             break;
         default:
             break;
@@ -342,6 +357,40 @@ void ProtogenProject::AddBackgroundMaterial(Material::Method method, Material* m
     backgroundMaterial.AddMaterial(method, material, frames, minOpacity, maxOpacity);
 }
 
+void ProtogenProject::AddBackgroundMaterialFrame(Color color, float opacity){
+    switch(color){
+        case CYELLOW:
+            backgroundMaterial.AddMaterialFrame(yellowMaterial, opacity);
+            break;
+        case CORANGE:
+            backgroundMaterial.AddMaterialFrame(orangeMaterial, opacity);
+            break;
+        case CWHITE:
+            backgroundMaterial.AddMaterialFrame(whiteMaterial, opacity);
+            break;
+        case CGREEN:
+            backgroundMaterial.AddMaterialFrame(greenMaterial, opacity);
+            break;
+        case CPURPLE:
+            backgroundMaterial.AddMaterialFrame(purpleMaterial, opacity);
+            break;
+        case CRED:
+            backgroundMaterial.AddMaterialFrame(redMaterial, opacity);
+            break;
+        case CBLUE:
+            backgroundMaterial.AddMaterialFrame(blueMaterial, opacity);
+            break;
+        case CRAINBOW:
+            backgroundMaterial.AddMaterialFrame(rainbowSpiral, opacity);
+            break;
+        case CRAINBOWNOISE:
+            backgroundMaterial.AddMaterialFrame(flowNoise, opacity);
+            break;
+        default:
+            break;
+    }
+}
+
 void ProtogenProject::AddBackgroundMaterialFrame(Material& material, float opacity){
     backgroundMaterial.AddMaterialFrame(material, opacity);
 }
@@ -352,6 +401,7 @@ void ProtogenProject::SpectrumAnalyzerFace(){
     eEA.AddParameterFrame(offsetFaceInd, 1.0f);
     eEA.AddParameterFrame(offsetFaceIndSA, 1.0f);
 
+    materialAnimator.AddMaterialFrame(sA, offsetFaceSA);
     backgroundMaterial.AddMaterialFrame(sA, offsetFaceSA);
 }
 
@@ -361,6 +411,7 @@ void ProtogenProject::AudioReactiveGradientFace(){
     eEA.AddParameterFrame(offsetFaceInd, 1.0f);
     eEA.AddParameterFrame(offsetFaceIndARG, 1.0f);
 
+    materialAnimator.AddMaterialFrame(aRG, offsetFaceARG);
     backgroundMaterial.AddMaterialFrame(aRG, offsetFaceARG);
 }
 
@@ -370,6 +421,7 @@ void ProtogenProject::OscilloscopeFace(){
     eEA.AddParameterFrame(offsetFaceInd, 1.0f);
     eEA.AddParameterFrame(offsetFaceIndOSC, 1.0f);
 
+    materialAnimator.AddMaterialFrame(oSC, offsetFaceOSC);
     backgroundMaterial.AddMaterialFrame(oSC, offsetFaceOSC);
 }
 
@@ -444,11 +496,18 @@ ProtogenProject::ProtogenProject(CameraManager* cameras, Controller* controller,
 
     cameraSize = camMax - camMin;
 
-    sA.SetSize(cameraSize);
-    sA.SetPosition(cameraSize / 2.0f);
+    //sA.SetSize(cameraSize);
+    //sA.SetPosition(cameraSize / 2.0f);
 
-    oSC.SetSize(cameraSize);
-    oSC.SetPosition(cameraSize / 2.0f);
+    //oSC.SetSize(cameraSize);
+    //oSC.SetPosition(cameraSize / 2.0f);
+
+    
+    sA.SetSize(Vector2D(220.0f, 72.0f));
+    sA.SetPosition(Vector2D());
+
+    oSC.SetSize(Vector2D(220.0f, 72.0f));
+    oSC.SetPosition(Vector2D());
 
     hud.SetFaceMax(camMax);
     hud.SetFaceMin(camMin);
