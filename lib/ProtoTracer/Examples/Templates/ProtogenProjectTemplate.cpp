@@ -24,6 +24,7 @@ void ProtogenProject::SetMaterialLayers(){
     materialAnimator.AddMaterial(Material::Replace, &rainbowSpiral, 40, 0.0f, 1.0f);//layer 9
     materialAnimator.AddMaterial(Material::Replace, &roseMaterial, 40, 0.0f, 1.0f); // layer 10
     materialAnimator.AddMaterial(Material::Replace, &customMaterial, 40, 0.0f, 1.0f); // layer 11 for custom color
+    materialAnimator.AddMaterial(Material::Replace, &hRainbow, 40, 0.0f, 1.0f);//layer 10
     materialAnimator.AddMaterial(Material::Replace, &sA, 20, 0.0f, 1.0f);
     materialAnimator.AddMaterial(Material::Replace, &aRG, 20, 0.0f, 1.0f);
     materialAnimator.AddMaterial(Material::Replace, &oSC, 20, 0.0f, 1.0f);
@@ -38,6 +39,7 @@ void ProtogenProject::SetMaterialLayers(){
     backgroundMaterial.AddMaterial(Material::Replace, &blueMaterial, 40, 0.0f, 1.0f);//layer 7
     backgroundMaterial.AddMaterial(Material::Replace, &flowNoise, 40, 0.0f, 1.0f);//layer 8
     backgroundMaterial.AddMaterial(Material::Replace, &rainbowSpiral, 40, 0.0f, 1.0f);//layer 9
+    backgroundMaterial.AddMaterial(Material::Replace, &hRainbow, 40, 0.0f, 1.0f);//layer 10
     backgroundMaterial.AddMaterial(Material::Add, &sA, 20, 0.0f, 1.0f);
     backgroundMaterial.AddMaterial(Material::Add, &aRG, 20, 0.0f, 1.0f);
     backgroundMaterial.AddMaterial(Material::Add, &oSC, 20, 0.0f, 1.0f);
@@ -75,6 +77,7 @@ void ProtogenProject::SetMaterialColor(){
         case 7: materialAnimator.AddMaterialFrame(blueMaterial, 0.8f); break;
         case 8: materialAnimator.AddMaterialFrame(rainbowSpiral, 0.8f); break;
         case 9: materialAnimator.AddMaterialFrame(flowNoise, 0.8f); break;
+        case 10: materialAnimator.AddMaterialFrame(hRainbow, 0.8f); break;
         default: break;
     }
 }
@@ -130,6 +133,7 @@ void ProtogenProject::UpdateFace(float ratio) {
     
     flowNoise.Update(ratio);
     rainbowSpiral.Update(ratio);
+    hRainbow.Update(ratio);
     materialAnimator.Update();
     backgroundMaterial.Update();
 
@@ -182,88 +186,117 @@ Transform ProtogenProject::GetAlignmentTransform(Vector2D min, Vector2D max, Obj
     return objAOther.GetTransform(objects, objectCount);
 }
 
-void ProtogenProject::AlignObject(Vector2D min, Vector2D max, Object3D* obj, float rotation, float margin){
+void ProtogenProject::AlignObject(Vector2D min, Vector2D max, Object3D* obj, float rotation, float margin, bool mirror){
     objAOther.SetCameraMin(min);
     objAOther.SetCameraMax(max);
 
     objAOther.SetPlaneOffsetAngle(rotation);
     objAOther.SetEdgeMargin(margin);
     objAOther.AlignObject(obj);
+    
+    objAOther.SetMirrorX(mirror);
 }
 
-void ProtogenProject::AlignObjects(Vector2D min, Vector2D max, Object3D** objects, uint8_t objectCount, float rotation, float margin){
+void ProtogenProject::AlignObjects(Vector2D min, Vector2D max, Object3D** objects, uint8_t objectCount, float rotation, float margin, bool mirror){
     objAOther.SetCameraMin(min);
     objAOther.SetCameraMax(max);
 
     objAOther.SetPlaneOffsetAngle(rotation);
     objAOther.SetEdgeMargin(margin);
     objAOther.AlignObjects(objects, objectCount);
+    
+    objAOther.SetMirrorX(mirror);
 }
 
-void ProtogenProject::AlignObjectNoScale(Vector2D min, Vector2D max, Object3D* obj, float rotation, float margin){
+void ProtogenProject::AlignObjectNoScale(Vector2D min, Vector2D max, Object3D* obj, float rotation, float margin, bool mirror){
     objAOther.SetCameraMin(min);
     objAOther.SetCameraMax(max);
 
     objAOther.SetPlaneOffsetAngle(rotation);
     objAOther.SetEdgeMargin(margin);
     objAOther.AlignObjectNoScale(obj);
+    
+    objAOther.SetMirrorX(mirror);
 }
 
-void ProtogenProject::AlignObjectsNoScale(Vector2D min, Vector2D max, Object3D** objects, uint8_t objectCount, float rotation, float margin){
+void ProtogenProject::AlignObjectsNoScale(Vector2D min, Vector2D max, Object3D** objects, uint8_t objectCount, float rotation, float margin, bool mirror){
     objAOther.SetCameraMin(min);
     objAOther.SetCameraMax(max);
 
     objAOther.SetPlaneOffsetAngle(rotation);
     objAOther.SetEdgeMargin(margin);
     objAOther.AlignObjectsNoScale(objects, objectCount);
+    
+    objAOther.SetMirrorX(mirror);
 }
 
-void ProtogenProject::AlignObjectFace(Object3D* obj, float rotation, float margin){
+void ProtogenProject::AlignObjectFace(Object3D* obj, float rotation, float margin, bool mirror){
     objA.SetPlaneOffsetAngle(rotation);
     objA.SetEdgeMargin(margin);
     objA.AlignObject(obj);
+    objA.SetMirrorX(mirror);
 }
 
-void ProtogenProject::AlignObjectsFace(Object3D** objects, uint8_t objectCount, float rotation, float margin){
+void ProtogenProject::AlignObjectsFace(Object3D** objects, uint8_t objectCount, float rotation, float margin, bool mirror){
     objA.SetPlaneOffsetAngle(rotation);
     objA.SetEdgeMargin(margin);
     objA.AlignObjects(objects, objectCount);
+    objA.SetMirrorX(mirror);
 }
 
-void ProtogenProject::AlignObjectNoScaleFace(Object3D* obj, float rotation, float margin){
+void ProtogenProject::AlignObjectNoScaleFace(Object3D* obj, float rotation, float margin, bool mirror){
     objA.SetPlaneOffsetAngle(rotation);
     objA.SetEdgeMargin(margin);
     objA.AlignObjectNoScale(obj);
+    objA.SetMirrorX(mirror);
 }
 
-void ProtogenProject::AlignObjectsNoScaleFace(Object3D** objects, uint8_t objectCount, float rotation, float margin){
+void ProtogenProject::AlignObjectsNoScaleFace(Object3D** objects, uint8_t objectCount, float rotation, float margin, bool mirror){
     objA.SetPlaneOffsetAngle(rotation);
     objA.SetEdgeMargin(margin);
     objA.AlignObjectsNoScale(objects, objectCount);
+    objA.SetMirrorX(mirror);
 }
 
-void ProtogenProject::AlignObjectRear(Object3D* obj, float rotation, float margin){
+void ProtogenProject::AlignObjectRear(Object3D* obj, float rotation, float margin, bool mirror){
     objARear.SetPlaneOffsetAngle(rotation);
     objARear.SetEdgeMargin(margin);
     objARear.AlignObject(obj);
+    objARear.SetMirrorX(mirror);
 }
 
-void ProtogenProject::AlignObjectsRear(Object3D** objects, uint8_t objectCount, float rotation, float margin){
+void ProtogenProject::AlignObjectsRear(Object3D** objects, uint8_t objectCount, float rotation, float margin, bool mirror){
     objARear.SetPlaneOffsetAngle(rotation);
     objARear.SetEdgeMargin(margin);
     objARear.AlignObjects(objects, objectCount);
+    objARear.SetMirrorX(mirror);
 }
 
-void ProtogenProject::AlignObjectNoScaleRear(Object3D* obj, float rotation, float margin){
+void ProtogenProject::AlignObjectNoScaleRear(Object3D* obj, float rotation, float margin, bool mirror){
     objARear.SetPlaneOffsetAngle(rotation);
     objARear.SetEdgeMargin(margin);
     objARear.AlignObjectNoScale(obj);
+    objARear.SetMirrorX(mirror);
 }
 
-void ProtogenProject::AlignObjectsNoScaleRear(Object3D** objects, uint8_t objectCount, float rotation, float margin){
+void ProtogenProject::AlignObjectsNoScaleRear(Object3D** objects, uint8_t objectCount, float rotation, float margin, bool mirror){
     objARear.SetPlaneOffsetAngle(rotation);
     objARear.SetEdgeMargin(margin);
     objARear.AlignObjectsNoScale(objects, objectCount);
+    objARear.SetMirrorX(mirror);
+}
+
+
+ObjectAlign* ProtogenProject::GetObjectAlign(){
+    return &objAOther;
+}
+
+ObjectAlign* ProtogenProject::GetObjectAlignFace(){
+    return &objA;
+}
+
+ObjectAlign* ProtogenProject::GetObjectAlignRear(){
+    return &objARear;
 }
 
 float ProtogenProject::GetFaceScale(){
@@ -344,6 +377,9 @@ void ProtogenProject::AddMaterialFrame(Color color, float opacity){
         case CRAINBOWNOISE:
             materialAnimator.AddMaterialFrame(flowNoise, opacity);
             break;
+        case CHORIZONTALRAINBOW:
+            materialAnimator.AddMaterialFrame(hRainbow, opacity);
+            break;
         default:
             break;
     }
@@ -386,6 +422,9 @@ void ProtogenProject::AddBackgroundMaterialFrame(Color color, float opacity){
         case CRAINBOWNOISE:
             backgroundMaterial.AddMaterialFrame(flowNoise, opacity);
             break;
+        case CHORIZONTALRAINBOW:
+            backgroundMaterial.AddMaterialFrame(hRainbow, opacity);
+            break;
         default:
             break;
     }
@@ -403,6 +442,8 @@ void ProtogenProject::SpectrumAnalyzerFace(){
 
     materialAnimator.AddMaterialFrame(sA, offsetFaceSA);
     backgroundMaterial.AddMaterialFrame(sA, offsetFaceSA);
+
+    SpectrumAnalyzerCallback();
 }
 
 void ProtogenProject::AudioReactiveGradientFace(){
@@ -413,6 +454,8 @@ void ProtogenProject::AudioReactiveGradientFace(){
 
     materialAnimator.AddMaterialFrame(aRG, offsetFaceARG);
     backgroundMaterial.AddMaterialFrame(aRG, offsetFaceARG);
+
+    AudioReactiveGradientCallback();
 }
 
 void ProtogenProject::OscilloscopeFace(){
@@ -423,6 +466,8 @@ void ProtogenProject::OscilloscopeFace(){
 
     materialAnimator.AddMaterialFrame(oSC, offsetFaceOSC);
     backgroundMaterial.AddMaterialFrame(oSC, offsetFaceOSC);
+
+    OscilloscopeCallback();
 }
 
 void ProtogenProject::HideFace(){
@@ -490,7 +535,6 @@ ProtogenProject::ProtogenProject(CameraManager* cameras, Controller* controller,
     objA.SetCameraMax(camMax);
     objA.SetCameraMin(camMin);
     objA.SetJustification(ObjectAlign::Stretch);
-    objA.SetMirrorX(true);
     
     this->scene.EnableEffect();
 
