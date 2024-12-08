@@ -107,6 +107,18 @@ private:
         AddMaterialFrame(Color::CPINK);
     }
 
+    void SpectrumAnalyzerCallback() override {
+        AddMaterialFrame(Color::CHORIZONTALRAINBOW, 0.8f);
+    }
+
+    void AudioReactiveGradientCallback() override {
+        AddMaterialFrame(Color::CHORIZONTALRAINBOW, 0.8f);
+    }
+
+    void OscilloscopeCallback() override {
+        AddMaterialFrame(Color::CHORIZONTALRAINBOW, 0.8f);
+    }
+
 public:
     ProtogenHUB75Project() : ProtogenProject(&cameras, &controller, 2, Vector2D(), Vector2D(192.0f, 94.0f), 22, 23, 9){
         scene.AddObject(pM.GetObject());
