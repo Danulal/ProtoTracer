@@ -344,7 +344,7 @@ void ProtogenProject::SetCustomColor(RGBColor color)
     materialAnimator.AddMaterialFrame(customMaterial, 0.8f);
 }
 
-void ProtogenProject::AddMaterialFrame(Color color){
+//void ProtogenProject::AddMaterialFrame(Color color){
 void ProtogenProject::AddMaterialFrame(Color color, float opacity){
     switch(color){
         case CYELLOW:

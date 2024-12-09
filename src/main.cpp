@@ -8,43 +8,48 @@
 //#include "Examples/Commissions/UnicornZhenjaAnimation.h"
 #include "Examples/Protogen/ProtogenHUB75Project.h"
 //#include "Examples/VerifyEngine.h"
+#include "../lib/ProtoTracer/Controller/HUB75Controller.h"
 
+#include "Utils/Bluetooth.hpp"
 
 //#include "Examples/Commissions/ArrowAnimation.h"
 //#include "../lib/ProtoTracer/Examples/Protogen/BetaProject.h"
 
 ProtogenHUB75Project project;
+DanulalProto::Utils::BluetoothController bluetooth;
+
+Menu menu;
 
 void setup() {
     Serial.begin(115200);
     Serial.println("\nStarting...");
-    pinMode(14, INPUT_PULLDOWN);
-    
+
     project.Initialize();
+
     delay(100);
 }
 
-unsigned long currentMillis = 0;
-unsigned long prevMillis = 0;
-
 void loop() {
+    bluetooth.run();
 
-    currentMillis = millis();
-
-    if(currentMillis - prevMillis >= 2000) { // timer thingy that does something every 2 seconds
-        prevMillis = currentMillis;
-
+    if (bluetooth.getMenuOverride()) { // check if menu gets overriden by phone
+        if(bluetooth.getGayMode()) {
+            project.SelectColor(9);
+        } else {
+            project.CustomFaceColor(bluetooth.getColor());
+        }
     }
-
-    project.CustomFaceColor(RGBColor(0, 255, 150));
 
     float ratio = (float)(millis() % 5000) / 5000.0f;
 
+    
+    
     project.Animate(ratio); 
+
 
     project.Render();
 
     project.Display();
 
-    project.PrintStats();
+    // project.PrintStats();
 }
