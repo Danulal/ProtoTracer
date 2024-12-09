@@ -1,3 +1,7 @@
+# This is a Fork of ProtoTracer
+containing additions like an [bluetooth android app](https://github.com/Danulal/Protogen-Bluetooth-App) integration, and a way of setting the color with an RGB code
+This is meant to be used with the HUB75 Panels, a Teensy 4.0, the Smartmatrix shield, and a bluetooth module like the HC-06
+
 # **ProtoTracer: 3D Rendering and Animation Engine**
 This project is a real-time 3D rendering and animation engine designed for use on the Teensy 4.0. It supports 64x32 HUB75 panels, as well as a custom panel design based on WS2812b LEDs.
 
