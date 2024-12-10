@@ -1,4 +1,5 @@
 #include "Bluetooth.hpp"
+#include <EEPROM.h>
 
 namespace DanulalProto::Utils
 {
@@ -14,9 +15,9 @@ namespace DanulalProto::Utils
     byte currentByte;
     int8_t currentDataPosition;
 
-    uint8_t colorR;
-    uint8_t colorG;
-    uint8_t colorB;
+    uint8_t colorR = 0;
+    uint8_t colorG = 0;
+    uint8_t colorB = 0;
 
     uint8_t face;
 
@@ -100,6 +101,13 @@ namespace DanulalProto::Utils
                             case 4: // Expression changing
                             {
                                 expression = lastRecievedData[0];
+                                break;
+                            }
+                            case 5: // write default color to eeprom
+                            {
+                                EEPROM.write(15, colorR);
+                                EEPROM.write(16, colorG);
+                                EEPROM.write(17, colorB);
                                 break;
                             }
                     }

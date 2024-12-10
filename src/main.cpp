@@ -3,6 +3,7 @@
 
 #ifdef TESTHARDWARE
 #include "Examples/Protogen/ProtogenHardwareTest.h"
+HardwareTest test;
 #endif
 
 //#include "Examples/Commissions/UnicornZhenjaAnimation.h"
@@ -12,6 +13,8 @@
 
 #include "Utils/Bluetooth.hpp"
 
+#include <EEPROM.h>
+
 //#include "Examples/Commissions/ArrowAnimation.h"
 //#include "../lib/ProtoTracer/Examples/Protogen/BetaProject.h"
 
@@ -20,11 +23,18 @@ DanulalProto::Utils::BluetoothController bluetooth;
 
 Menu menu;
 
+RGBColor color;
+RGBColor BTcolor;
+
 void setup() {
     Serial.begin(115200);
     Serial.println("\nStarting...");
 
     project.Initialize();
+
+    color.R = EEPROM.read(15);
+    color.G = EEPROM.read(16);
+    color.B = EEPROM.read(17);
 
     delay(100);
 }
@@ -32,14 +42,20 @@ void setup() {
 void loop() {
     bluetooth.run();
 
+    BTcolor = bluetooth.getColor();
+
+    if(BTcolor.R != 0 && BTcolor.G != 0 && BTcolor.B != 0) {
+        color = BTcolor;
+    }
+
     if (bluetooth.getMenuOverride()) { // check if menu gets overriden by phone
         if(bluetooth.getGayMode()) {
             project.SelectColor(9);
         } else {
             if (bluetooth.getExpression() != 8) {
-                project.CustomFaceColor(bluetooth.getColor());
+                project.CustomFaceColor(color);
             } else if (bluetooth.getExpression() == 8 && !bluetooth.getExpressionOverride()) {
-                project.CustomFaceColor(bluetooth.getColor());
+                project.CustomFaceColor(color);
             }
         }
     }
@@ -51,7 +67,6 @@ void loop() {
     float ratio = (float)(millis() % 5000) / 5000.0f;
 
     project.Animate(ratio); 
-
 
     project.Render();
 

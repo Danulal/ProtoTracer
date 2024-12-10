@@ -188,7 +188,6 @@ public:
 
     void Initialize() override;
 
-    
     virtual void SpectrumAnalyzerCallback() = 0;
     virtual void AudioReactiveGradientCallback() = 0;
     virtual void OscilloscopeCallback() = 0;

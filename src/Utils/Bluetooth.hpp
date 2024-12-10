@@ -22,9 +22,9 @@ namespace DanulalProto::Utils
         char msgBuf[128];
 		char msg[128];
 
-        uint8_t colorR = 255;
-        uint8_t colorG = 162;
-        uint8_t colorB = 28;
+        uint8_t colorR = 0;
+        uint8_t colorG = 0;
+        uint8_t colorB = 0;
         
         uint8_t face;
         
