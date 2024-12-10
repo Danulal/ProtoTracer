@@ -14,12 +14,18 @@ HardwareTest test;
 #include "Utils/Bluetooth.hpp"
 
 #include <EEPROM.h>
+#include <SparkFun_APDS9960.h>
+#include <Wire.h>
 
 //#include "Examples/Commissions/ArrowAnimation.h"
 //#include "../lib/ProtoTracer/Examples/Protogen/BetaProject.h"
 
 ProtogenHUB75Project project;
 DanulalProto::Utils::BluetoothController bluetooth;
+
+SparkFun_APDS9960 boopSensor = SparkFun_APDS9960();
+uint8_t proximity_data = 0;
+bool booped = false;
 
 Menu menu;
 
@@ -31,6 +37,24 @@ void setup() {
     Serial.println("\nStarting...");
 
     project.Initialize();
+
+    if ( boopSensor.init() ) {
+        Serial.println(F("APDS-9960 initialization complete"));
+    } else {
+        Serial.println(F("Something went wrong during APDS-9960 init!"));
+    }
+
+      // Adjust the Proximity sensor gain
+    if ( !boopSensor.setProximityGain(PGAIN_2X) ) {
+        Serial.println(F("Something went wrong trying to set PGAIN"));
+    }
+
+    // Start running the APDS-9960 proximity sensor (no interrupts)
+    if ( boopSensor.enableProximitySensor(false) ) {
+        Serial.println(F("Proximity sensor is now running"));
+    } else {
+        Serial.println(F("Something went wrong during sensor init!"));
+    }
 
     color.R = EEPROM.read(15);
     color.G = EEPROM.read(16);
@@ -44,6 +68,16 @@ void loop() {
 
     BTcolor = bluetooth.getColor();
 
+    if ( boopSensor.readProximity(proximity_data) && menu.UseBoopSensor() ) {
+        if (proximity_data > 50) {
+            booped = true;
+        } else {
+            booped = false;
+        }
+    } else {
+        Serial.println("Error reading proximity value");
+    }
+
     if(BTcolor.R != 0 && BTcolor.G != 0 && BTcolor.B != 0) {
         color = BTcolor;
     }
@@ -52,7 +86,7 @@ void loop() {
         if(bluetooth.getGayMode()) {
             project.SelectColor(9);
         } else {
-            if (bluetooth.getExpression() != 8) {
+            if (bluetooth.getExpression() != 8 && !booped) {
                 project.CustomFaceColor(color);
             } else if (bluetooth.getExpression() == 8 && !bluetooth.getExpressionOverride()) {
                 project.CustomFaceColor(color);
@@ -61,7 +95,12 @@ void loop() {
     }
 
     if (bluetooth.getExpressionOverride()) { // if both menu and bluetooth sets expression they will mix
-        project.SelectFace(bluetooth.getExpression());
+        if(!booped) {
+            project.SelectFace(bluetooth.getExpression());
+        }
+    }
+    if(booped) {
+        project.SelectFace(8);
     }
 
     float ratio = (float)(millis() % 5000) / 5000.0f;
