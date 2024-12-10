@@ -24,6 +24,9 @@ namespace DanulalProto::Utils
 
     bool menuOverride = true;
 
+    bool expressionOverride = true;
+    int expression = 0;
+
     byte currentDataSum = 0;
 
     void BluetoothController::run() 
@@ -84,30 +87,21 @@ namespace DanulalProto::Utils
                                 }
                                 break;
                             }
-                            case 3: // face changing
+                            case 3: // Override menu expressions
                             {
-                                if (lastRecievedData[0] == 150)
+                                if (lastRecievedData[0] == 1)
                                 {
-                                    break;
-                                }
-
-                                if (lastRecievedData[0] > 25)
-                                {
-                                    break;
-                                }
-
-                                switch (lastRecievedData[0])
-                                {
-                                case 1:
-
-                                    break;
-                                
-                                default:
-                                    break;
+                                    expressionOverride = true;
+                                } else if (lastRecievedData[0] == 0) {
+                                    expressionOverride = false;
                                 }
                                 break;
-
-                        }
+                            }
+                            case 4: // Expression changing
+                            {
+                                expression = lastRecievedData[0];
+                                break;
+                            }
                     }
 
                     currentDataPosition = 0;

@@ -168,15 +168,16 @@ public:
         }
 
         switch(code) {
-            case 0: Default();  break;
-            case 1: Angry();    break;
-            case 2: Doubt();    break;
-            case 3: Frown();    break;
-            case 4: LookUp();   break;
-            case 5: Sad();      break;
+            case 0: Default();                      break;
+            case 1: Angry();                        break;
+            case 2: Doubt();                        break;
+            case 3: Frown();                        break;
+            case 4: LookUp();                       break;
+            case 5: Sad();                          break;
             case 6: AudioReactiveGradientFace();    break;
             case 7: OscilloscopeFace();             break;
             case 8: Surprised();                    break;
+            case 9: LookDown();                     break;
             default: SpectrumAnalyzerFace();        break;
         }
     }

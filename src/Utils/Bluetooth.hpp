@@ -15,6 +15,9 @@ namespace DanulalProto::Utils
         bool getGayMode() { return gayMode; }
         bool getMenuOverride() { return menuOverride; }
 
+        bool getExpressionOverride() { return expressionOverride; }
+        int getExpression() { return expression; }
+
     private:
         char msgBuf[128];
 		char msg[128];
@@ -27,5 +30,7 @@ namespace DanulalProto::Utils
         
         bool gayMode = false;
         bool menuOverride = true;
+        bool expressionOverride = true;
+        int expression = 0;
     };
 }

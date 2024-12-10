@@ -36,14 +36,20 @@ void loop() {
         if(bluetooth.getGayMode()) {
             project.SelectColor(9);
         } else {
-            project.CustomFaceColor(bluetooth.getColor());
+            if (bluetooth.getExpression() != 8) {
+                project.CustomFaceColor(bluetooth.getColor());
+            } else if (bluetooth.getExpression() == 8 && !bluetooth.getExpressionOverride()) {
+                project.CustomFaceColor(bluetooth.getColor());
+            }
         }
+    }
+
+    if (bluetooth.getExpressionOverride()) { // if both menu and bluetooth sets expression they will mix
+        project.SelectFace(bluetooth.getExpression());
     }
 
     float ratio = (float)(millis() % 5000) / 5000.0f;
 
-    
-    
     project.Animate(ratio); 
 
 
