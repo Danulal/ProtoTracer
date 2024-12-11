@@ -1,5 +1,6 @@
 #pragma once
 #include "../lib/ProtoTracer/Assets/Models/FBX/NukudeFlat.h"
+#include "../../lib/ProtoTracer/ExternalDevices/InputDevices/Menu/Menu.h"
 #include <vector>
 
 namespace DanulalProto::Utils
@@ -17,6 +18,7 @@ namespace DanulalProto::Utils
 
         bool getExpressionOverride() { return expressionOverride; }
         int getExpression() { return expression; }
+        Menu menu;
 
     private:
         char msgBuf[128];

@@ -27,8 +27,6 @@ SparkFun_APDS9960 boopSensor = SparkFun_APDS9960();
 uint8_t proximity_data = 0;
 bool booped = false;
 
-Menu menu;
-
 RGBColor color;
 RGBColor BTcolor;
 
@@ -68,7 +66,7 @@ void loop() {
 
     BTcolor = bluetooth.getColor();
 
-    if ( boopSensor.readProximity(proximity_data) && menu.UseBoopSensor() ) {
+    if ( boopSensor.readProximity(proximity_data) && bluetooth.menu.UseBoopSensor() ) {
         if (proximity_data > 50) {
             booped = true;
         } else {
@@ -111,5 +109,5 @@ void loop() {
 
     project.Display();
 
-    // project.PrintStats();
+    project.PrintStats();
 }

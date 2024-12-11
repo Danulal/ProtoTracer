@@ -1,11 +1,13 @@
 #include "Bluetooth.hpp"
 #include <EEPROM.h>
 
+Menu menu;
+
 namespace DanulalProto::Utils
 {
     BluetoothController::BluetoothController() 
     {
-        Serial1.begin(9600); // Start Bluetooth Serial
+        Serial3.begin(9600); // Start Bluetooth Serial
     }
 
     static constexpr uint8_t PacketSignature1 = 0xAA;
@@ -32,9 +34,9 @@ namespace DanulalProto::Utils
 
     void BluetoothController::run() 
     {
-        if (Serial1.available()) 
+        if (Serial3.available()) 
         {
-            currentByte = Serial1.readBytes(data, 1);
+            currentByte = Serial3.readBytes(data, 1);
             currentByte = data[0];
 
             switch (currentDataPosition)
