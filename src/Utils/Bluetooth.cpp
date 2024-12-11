@@ -7,7 +7,7 @@ namespace DanulalProto::Utils
 {
     BluetoothController::BluetoothController() 
     {
-        Serial3.begin(9600); // Start Bluetooth Serial
+        Serial4.begin(9600); // Start Bluetooth Serial
     }
 
     static constexpr uint8_t PacketSignature1 = 0xAA;
@@ -34,9 +34,9 @@ namespace DanulalProto::Utils
 
     void BluetoothController::run() 
     {
-        if (Serial3.available()) 
+        if (Serial4.available()) 
         {
-            currentByte = Serial3.readBytes(data, 1);
+            currentByte = Serial4.readBytes(data, 1);
             currentByte = data[0];
 
             switch (currentDataPosition)

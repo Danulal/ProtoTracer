@@ -72,8 +72,6 @@ void loop() {
         } else {
             booped = false;
         }
-    } else {
-        Serial.println("Error reading proximity value");
     }
 
     if(BTcolor.R != 0 && BTcolor.G != 0 && BTcolor.B != 0) {
