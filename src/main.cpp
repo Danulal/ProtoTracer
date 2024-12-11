@@ -74,7 +74,7 @@ void loop() {
         }
     }
 
-    if(BTcolor.R != 0 && BTcolor.G != 0 && BTcolor.B != 0) {
+    if(!(BTcolor.R == 0 && BTcolor.G == 0 && BTcolor.B == 0)) {
         color = BTcolor;
     }
 
