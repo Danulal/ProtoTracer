@@ -1,8 +1,6 @@
 #include "Bluetooth.hpp"
 #include <EEPROM.h>
 
-Menu menu;
-
 namespace DanulalProto::Utils
 {
     BluetoothController::BluetoothController() 

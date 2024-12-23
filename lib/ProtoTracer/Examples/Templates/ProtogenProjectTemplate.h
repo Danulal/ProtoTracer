@@ -63,6 +63,7 @@ private:
     SimpleMaterial blueMaterial = SimpleMaterial(RGBColor(0, 0, 255));
     SimpleMaterial yellowMaterial = SimpleMaterial(RGBColor(255, 255, 0));
     SimpleMaterial purpleMaterial = SimpleMaterial(RGBColor(130, 0, 255));
+    SimpleMaterial blackMaterial = SimpleMaterial(RGBColor(0, 0, 0));
     SimpleMaterial roseMaterial = SimpleMaterial(RGBColor(255, 150, 255));
     SimpleMaterial customMaterial = SimpleMaterial(RGBColor(100, 100, 100)); 
 
@@ -120,7 +121,8 @@ protected:
         CPINK,
         CRAINBOW,
         CRAINBOWNOISE,
-        CHORIZONTALRAINBOW
+        CHORIZONTALRAINBOW,
+        CBLACK
     };
     
     EasyEaseAnimator<60> eEA = EasyEaseAnimator<60>(IEasyEaseAnimator::Overshoot, 1.0f, 0.35f);
