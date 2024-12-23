@@ -1,9 +1,22 @@
 #include "Examples/UserConfiguration.h"
 #include "../lib/ProtoTracer/ExternalDevices/InputDevices/ButtonHandler.h"
 
-#ifdef TESTHARDWARE
-#include "Examples/Protogen/ProtogenHardwareTest.h"
-HardwareTest test;
+#if defined(PROJECT_PROTOGEN_HUB75)
+    #include "Examples/Protogen/ProtogenHUB75Project.h"
+    ProtogenHUB75Project project;
+#elif defined(PROJECT_PROTOGEN_WS35)
+    #include "Examples/Protogen/ProtogenWS35Project.h"
+    ProtogenWS35Project project;
+#elif defined(PROJECT_PROTOGEN_BETA)
+    #include "Examples/Protogen/BetaProject.h"
+    BetaProject project;
+#elif defined(PROJECT_VERIFY_ENGINE)
+    #include "Examples/VerifyEngine.h"
+    VerifyEngine project;
+#elif defined(PROJECT_VERIFY_HARDWARE)
+    #include "Examples/Protogen/ProtogenHardwareTest.h"
+#else
+    #error "No project defined! Please define one of PROJECT_PROTOGEN_HUB75, PROJECT_PROTOGEN_WS35, or PROJECT_VERIFY_ENGINE."
 #endif
 
 //#include "Examples/Commissions/UnicornZhenjaAnimation.h"
@@ -20,7 +33,6 @@ HardwareTest test;
 //#include "Examples/Commissions/ArrowAnimation.h"
 //#include "../lib/ProtoTracer/Examples/Protogen/BetaProject.h"
 
-ProtogenHUB75Project project;
 DanulalProto::Utils::BluetoothController bluetooth;
 
 SparkFun_APDS9960 boopSensor = SparkFun_APDS9960();
@@ -33,7 +45,8 @@ RGBColor BTcolor;
 void setup() {
     Serial.begin(115200);
     Serial.println("\nStarting...");
-
+    
+    #ifndef PROJECT_VERIFY_HARDWARE
     project.Initialize();
 
     if ( boopSensor.init() ) {
@@ -59,9 +72,19 @@ void setup() {
     color.B = EEPROM.read(17);
 
     delay(100);
+    #else
+        while(true){
+            HardwareTest::ScanDevices();
+            HardwareTest::TestNeoTrellis();
+            HardwareTest::TestBoopSensor();
+            HardwareTest::TestHUD();
+        }
+    #endif
 }
 
 void loop() {
+    
+    #ifndef PROJECT_VERIFY_HARDWARE
     bluetooth.run();
 
     BTcolor = bluetooth.getColor();
@@ -102,10 +125,9 @@ void loop() {
     float ratio = (float)(millis() % 5000) / 5000.0f;
 
     project.Animate(ratio); 
-
     project.Render();
-
     project.Display();
-
     project.PrintStats();
+    #endif
 }
+

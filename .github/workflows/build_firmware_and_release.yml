@@ -1,0 +1,163 @@
+name: Build and Release Firmware HEX Files
+
+on:
+  push:
+    branches: [ main, Testing ]
+    paths-ignore:
+      - 'firmware_builds/**'
+      - '.github/workflows/**'
+      - '.site/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Cache PlatformIO
+        uses: actions/cache@v4
+        with:
+          path: ~/.platformio
+          key: ${{ runner.os }}-platformio-${{ hashFiles('**/platformio.ini') }}
+          restore-keys: |
+            ${{ runner.os }}-platformio-
+
+      - name: Install PlatformIO
+        run: |
+          python -m pip install --upgrade pip
+          pip install platformio
+
+      - name: Install GNU Parallel
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y parallel
+
+      - name: Build All Environments in Parallel
+        run: |
+          environments=(
+            teensy40hub75
+            teensy40ws35
+            teensy40beta
+            teensy40verifyrender
+            teensy40verifyhardware
+            teensy41hub75
+            teensy41ws35
+            teensy41beta
+            teensy41verifyrender
+            teensy41verifyhardware
+          )
+
+          mkdir -p firmware_builds
+
+          build_env() {
+            local env=$1
+            echo "[$(date +%T)] Building environment: $env"
+            platformio run -e "$env"
+
+            source_hex=".pio/build/$env/firmware.hex"
+            if [ -f "$source_hex" ]; then
+              dest_hex="firmware_builds/${env}.hex"
+              cp "$source_hex" "$dest_hex"
+              echo "[$(date +%T)] Collected HEX file for $env at $dest_hex"
+            else
+              echo "[$(date +%T)] Error: HEX file not found for $env at $source_hex"
+              exit 1
+            fi
+          }
+
+          export -f build_env
+          printf "%s\n" "${environments[@]}" | parallel -j 4 build_env {}
+          echo "[$(date +%T)] All build environments completed."
+
+      - name: Upload Firmware Builds as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware_builds
+          path: firmware_builds/
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    env:
+      VERSION_NUMBER: "v1.${{ github.run_number }}"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download Firmware Builds Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: firmware_builds
+          path: firmware_builds/
+
+      - name: Zip Firmware Builds with Version Number
+        run: |
+          cd firmware_builds
+          VERSION_NUM_ONLY="${{ env.VERSION_NUMBER }}"
+          VERSION_NUM_ONLY="${VERSION_NUM_ONLY#v}"
+          zip ../firmware_build_${VERSION_NUM_ONLY}.zip *.hex
+          echo "ZIP_NAME=firmware_build_${VERSION_NUM_ONLY}.zip" >> $GITHUB_ENV
+
+      - name: Verify ZIP file exists
+        run: |
+          ls -la
+          echo "Looking for file: ${{ env.ZIP_NAME }}"
+          if [ ! -f "${{ env.ZIP_NAME }}" ]; then
+            echo "Error: ZIP file not found!"
+            exit 1
+          fi
+
+      - name: Prepare Release Assets
+        run: |
+          # Create a directory for individual hex files
+          mkdir -p release_assets
+          cp firmware_builds/*.hex release_assets/
+          cp ${{ env.ZIP_NAME }} release_assets/
+
+      - name: Create GitHub Release with All Assets
+        uses: ncipollo/release-action@v1
+        with:
+          tag: "${{ env.VERSION_NUMBER }}"
+          name: "Firmware Build ${{ env.VERSION_NUMBER }}"
+          body: |
+            Automated firmware build for environments:
+            - teensy40hub75
+            - teensy40ws35
+            - teensy40beta
+            - teensy40verifyrender
+            - teensy40verifyhardware
+            - teensy41hub75
+            - teensy41ws35
+            - teensy41beta
+            - teensy41verifyrender
+            - teensy41verifyhardware
+            
+            ### Downloads
+            - [Complete Firmware Package (ZIP)](https://github.com/coelacant1/ProtoTracer/releases/download/${{ env.VERSION_NUMBER }}/${{ env.ZIP_NAME }})
+            
+            Individual Firmware Files:
+            - [teensy40hub75.hex](https://github.com/coelacant1/ProtoTracer/releases/download/${{ env.VERSION_NUMBER }}/teensy40hub75.hex)
+            - [teensy40ws35.hex](https://github.com/coelacant1/ProtoTracer/releases/download/${{ env.VERSION_NUMBER }}/teensy40ws35.hex)
+            - [teensy40beta.hex](https://github.com/coelacant1/ProtoTracer/releases/download/${{ env.VERSION_NUMBER }}/teensy40beta.hex)
+            - [teensy40verifyrender.hex](https://github.com/coelacant1/ProtoTracer/releases/download/${{ env.VERSION_NUMBER }}/teensy40verifyrender.hex)
+            - [teensy40verifyhardware.hex](https://github.com/coelacant1/ProtoTracer/releases/download/${{ env.VERSION_NUMBER }}/teensy40verifyhardware.hex)
+            - [teensy41hub75.hex](https://github.com/coelacant1/ProtoTracer/releases/download/${{ env.VERSION_NUMBER }}/teensy41hub75.hex)
+            - [teensy41ws35.hex](https://github.com/coelacant1/ProtoTracer/releases/download/${{ env.VERSION_NUMBER }}/teensy41ws35.hex)
+            - [teensy41beta.hex](https://github.com/coelacant1/ProtoTracer/releases/download/${{ env.VERSION_NUMBER }}/teensy41beta.hex)
+            - [teensy41verifyrender.hex](https://github.com/coelacant1/ProtoTracer/releases/download/${{ env.VERSION_NUMBER }}/teensy41verifyrender.hex)
+            - [teensy41verifyhardware.hex](https://github.com/coelacant1/ProtoTracer/releases/download/${{ env.VERSION_NUMBER }}/teensy41verifyhardware.hex)
+          artifacts: "release_assets/*"
+          artifactErrorsFailBuild: true
