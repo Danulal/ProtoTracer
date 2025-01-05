@@ -1,0 +1,51 @@
+name: Generate Documentation
+
+on:
+  workflow_run:
+    workflows:
+      - Build and Release Firmware HEX Files
+    types:
+      - completed
+
+jobs:
+  build-documentation:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install Doxygen
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y doxygen graphviz
+
+    - name: Setup Doxygen Awesome
+      run: |
+        git clone https://github.com/jothepro/doxygen-awesome-css.git
+        
+    - name: Generate Documentation
+      run: doxygen .docs/Doxyfile
+
+    - name: Fetch latest firmware files
+      run: |
+        mkdir -p .docs/html/firmware
+        LATEST_RELEASE=$(curl -s https://api.github.com/repos/coelacant1/ProtoTracer/releases/latest | jq -r '.assets[] | select(.name | endswith(".hex")) | .browser_download_url')
+        for url in $LATEST_RELEASE; do
+          echo "Downloading $url"
+          curl -L -o ".docs/html/firmware/$(basename $url)" "$url"
+        done
+
+    - name: Create firmware index
+      run: |
+        ls .docs/html/firmware/*.hex | xargs -n 1 basename > .docs/html/firmware/index.json
+
+    - name: Copy images
+      run: mv .docs/images/ .docs/html/images/
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: .docs/html
+        force_orphan: true
+        commit_message: 'docs: update documentation'
