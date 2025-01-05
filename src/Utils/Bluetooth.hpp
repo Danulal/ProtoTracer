@@ -16,7 +16,9 @@ namespace DanulalProto::Utils
         bool getMenuOverride() { return menuOverride; }
 
         bool getExpressionOverride() { return expressionOverride; }
-        int getExpression() { return expression; }
+        uint8_t getExpression() { return expression; }
+
+        bool getMenuButton() { return menuButtonPressed; }
 
     private:
         char msgBuf[128];
@@ -31,6 +33,7 @@ namespace DanulalProto::Utils
         bool gayMode = false;
         bool menuOverride = true;
         bool expressionOverride = true;
-        int expression = 0;
+        uint8_t expression = 0;
+        bool menuButtonPressed = false;
     };
 }

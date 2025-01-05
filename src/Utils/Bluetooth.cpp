@@ -15,19 +15,6 @@ namespace DanulalProto::Utils
     byte currentByte;
     int8_t currentDataPosition;
 
-    uint8_t colorR = 0;
-    uint8_t colorG = 0;
-    uint8_t colorB = 0;
-
-    uint8_t face;
-
-    bool gayMode = false;
-
-    bool menuOverride = true;
-
-    bool expressionOverride = true;
-    int expression = 0;
-
     byte currentDataSum = 0;
 
     void BluetoothController::run() 
@@ -108,6 +95,18 @@ namespace DanulalProto::Utils
                                 EEPROM.write(15, colorR);
                                 EEPROM.write(16, colorG);
                                 EEPROM.write(17, colorB);
+                                break;
+                            }
+                            case 6: // settings stuff
+                            {
+                                switch (lastRecievedData[0]) // settings type
+                                {
+                                case 0: // menu button
+                                    menuButtonPressed = lastRecievedData[1];
+                                    break;
+                                default:
+                                    break;
+                                }
                                 break;
                             }
                     }

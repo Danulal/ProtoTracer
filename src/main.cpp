@@ -35,6 +35,9 @@
 
 DanulalProto::Utils::BluetoothController bluetooth;
 
+#include "../lib/ProtoTracer/ExternalDevices/InputDevices/Menu/Menu.h"
+Menu menu;
+
 SparkFun_APDS9960 boopSensor = SparkFun_APDS9960();
 uint8_t proximity_data = 0;
 bool booped = false;
@@ -89,7 +92,13 @@ void loop() {
 
     BTcolor = bluetooth.getColor();
 
-    if ( boopSensor.readProximity(proximity_data) && bluetooth.menu.UseBoopSensor() ) {
+    if(bluetooth.getMenuButton()) { // faking the menu button
+        digitalWrite(23, LOW);
+    } else {
+        digitalWrite(23, HIGH);
+    }
+
+    if ( boopSensor.readProximity(proximity_data) && menu.UseBoopSensor() ) { // proximity sensor custom implementation
         if (proximity_data > 50) {
             booped = true;
         } else {
