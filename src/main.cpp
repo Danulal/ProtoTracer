@@ -1,18 +1,41 @@
+/**
+ * @file main.cpp
+ * @brief Entry point for various projects, managing initialization and main loop operations.
+ *
+ * This file determines which project to run based on the defined preprocessor directive
+ * and provides functionality for initializing and executing the selected project.
+ *
+ * Supported projects:
+ * - PROJECT_PROTOGEN_HUB75
+ * - PROJECT_PROTOGEN_WS35
+ * - PROJECT_PROTOGEN_BETA
+ * - PROJECT_VERIFY_ENGINE
+ * - PROJECT_VERIFY_HARDWARE
+ *
+ * @date 22/12/2024
+ * @version 1.0
+ * @author Coela Can't
+ */
+
 #include "Examples/UserConfiguration.h"
 #include "../lib/ProtoTracer/ExternalDevices/InputDevices/ButtonHandler.h"
 
 #if defined(PROJECT_PROTOGEN_HUB75)
     #include "Examples/Protogen/ProtogenHUB75Project.h"
-    ProtogenHUB75Project project;
+    ProtogenHUB75Project project; ///< Instance of the Protogen HUB75 project.
+
 #elif defined(PROJECT_PROTOGEN_WS35)
     #include "Examples/Protogen/ProtogenWS35Project.h"
-    ProtogenWS35Project project;
+    ProtogenWS35Project project; ///< Instance of the Protogen WS35 project.
+
 #elif defined(PROJECT_PROTOGEN_BETA)
     #include "Examples/Protogen/BetaProject.h"
-    BetaProject project;
+    BetaProject project; ///< Instance of the Beta project.
+
 #elif defined(PROJECT_VERIFY_ENGINE)
     #include "Examples/VerifyEngine.h"
-    VerifyEngine project;
+    VerifyEngine project; ///< Instance of the Verify Engine project.
+
 #elif defined(PROJECT_VERIFY_HARDWARE)
     #include "Examples/Protogen/ProtogenHardwareTest.h"
 #else
@@ -45,12 +68,31 @@ bool booped = false;
 RGBColor color;
 RGBColor BTcolor;
 
+//#include "Examples/Commissions/UnicornZhenjaAnimation.h"
+#include "Examples/Protogen/ProtogenHUB75Project.h"
+//#include "Examples/VerifyEngine.h"
+#include "../lib/ProtoTracer/Controller/HUB75Controller.h"
+
+#include "Utils/Bluetooth.hpp"
+
+#include <EEPROM.h>
+#include <SparkFun_APDS9960.h>
+#include <Wire.h>
+
+//#include "Examples/Commissions/ArrowAnimation.h"
+//#include "../lib/ProtoTracer/Examples/Protogen/BetaProject.h"
+
+/**
+ * @brief Arduino setup function, initializes the selected project.
+ *
+ * If PROJECT_VERIFY_HARDWARE is defined, runs continuous hardware testing.
+ */
 void setup() {
-    Serial.begin(115200);
+    Serial.begin(115200); ///< Initializes the serial port for debugging.
     Serial.println("\nStarting...");
-    
+
     #ifndef PROJECT_VERIFY_HARDWARE
-    project.Initialize();
+    project.Initialize(); ///< Initializes the selected project.
 
     if ( boopSensor.init() ) {
         Serial.println(F("APDS-9960 initialization complete"));
@@ -74,19 +116,23 @@ void setup() {
     color.G = EEPROM.read(16);
     color.B = EEPROM.read(17);
 
-    delay(100);
+    delay(100); ///< Ensures stability after initialization.
     #else
-        while(true){
-            HardwareTest::ScanDevices();
-            HardwareTest::TestNeoTrellis();
-            HardwareTest::TestBoopSensor();
-            HardwareTest::TestHUD();
-        }
+    while (true) {
+        HardwareTest::ScanDevices(); ///< Scans for connected hardware devices.
+        HardwareTest::TestNeoTrellis(); ///< Tests the NeoTrellis input device.
+        HardwareTest::TestBoopSensor(); ///< Tests the proximity (boop) sensor.
+        HardwareTest::TestHUD(); ///< Tests the HUD (Head-Up Display) functionality.
+    }
     #endif
 }
 
+/**
+ * @brief Arduino main loop function, animates, renders, and updates the selected project.
+ *
+ * If PROJECT_VERIFY_HARDWARE is defined, this function is disabled.
+ */
 void loop() {
-    
     #ifndef PROJECT_VERIFY_HARDWARE
     bluetooth.run();
 
@@ -131,12 +177,11 @@ void loop() {
         project.SelectFace(8);
     }
 
-    float ratio = (float)(millis() % 5000) / 5000.0f;
+    float ratio = (float)(millis() % 5000) / 5000.0f; ///< Calculates animation ratio based on time.
 
-    project.Animate(ratio); 
-    project.Render();
-    project.Display();
-    project.PrintStats();
+    project.Animate(ratio); ///< Animates the project based on the current ratio.
+    project.Render(); ///< Renders the project's scene.
+    project.Display(); ///< Displays the rendered frame.
+    project.PrintStats(); ///< Outputs debugging and performance statistics.
     #endif
 }
-
