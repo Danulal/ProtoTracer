@@ -150,6 +150,8 @@ void loop() {
         } else {
             booped = false;
         }
+    } else if (!menu.UseBoopSensor()) {
+        booped = false;
     }
 
     if(!(BTcolor.R == 0 && BTcolor.G == 0 && BTcolor.B == 0)) {
