@@ -145,7 +145,7 @@ void loop() {
     }
 
     if ( boopSensor.readProximity(proximity_data) && menu.UseBoopSensor() ) { // proximity sensor custom implementation
-        if (proximity_data > 50) {
+        if (proximity_data > 18) { // distance for triggering boop
             booped = true;
         } else {
             booped = false;
