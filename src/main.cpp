@@ -164,7 +164,7 @@ void loop() {
         } else {
             if (bluetooth.getExpression() != 8 && !booped) {
                 project.CustomFaceColor(color);
-            } else if (bluetooth.getExpression() == 8 && !bluetooth.getExpressionOverride()) {
+            } else if (bluetooth.getExpression() == 8 && !bluetooth.getExpressionOverride() && !booped) {
                 project.CustomFaceColor(color);
             }
         }
